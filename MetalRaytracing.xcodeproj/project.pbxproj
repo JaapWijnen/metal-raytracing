@@ -1,0 +1,386 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 55;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		8E90E4B3278C8505008FE76D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E90E4B2278C8505008FE76D /* AppDelegate.swift */; };
+		8E90E4B5278C8505008FE76D /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E90E4B4278C8505008FE76D /* GameViewController.swift */; };
+		8E90E4B7278C8505008FE76D /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E90E4B6278C8505008FE76D /* Renderer.swift */; };
+		8E90E4B9278C8505008FE76D /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 8E90E4B8278C8505008FE76D /* Shaders.metal */; };
+		8E90E4BC278C8505008FE76D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8E90E4BB278C8505008FE76D /* Assets.xcassets */; };
+		8E90E4BF278C8505008FE76D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 8E90E4BD278C8505008FE76D /* Main.storyboard */; };
+		8E90E4C7278C852F008FE76D /* Raytracing.metal in Sources */ = {isa = PBXBuildFile; fileRef = 8E90E4C6278C852F008FE76D /* Raytracing.metal */; };
+		8E90E4C9278C853B008FE76D /* Scene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E90E4C8278C853B008FE76D /* Scene.swift */; };
+		8E90E4CB278C8542008FE76D /* DragonScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E90E4CA278C8542008FE76D /* DragonScene.swift */; };
+		8E90E4CD278C854B008FE76D /* Mesh.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E90E4CC278C854B008FE76D /* Mesh.swift */; };
+		8E90E4CF278C8550008FE76D /* Model.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E90E4CE278C8550008FE76D /* Model.swift */; };
+		8E90E4D1278C855B008FE76D /* SubMesh.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E90E4D0278C855B008FE76D /* SubMesh.swift */; };
+		8E90E4D3278C8586008FE76D /* Utilities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E90E4D2278C8586008FE76D /* Utilities.swift */; };
+		8E90E4D5278C8A6F008FE76D /* Resources in Resources */ = {isa = PBXBuildFile; fileRef = 8E90E4D4278C8A6F008FE76D /* Resources */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		8E90E4AF278C8505008FE76D /* MetalRaytracing.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MetalRaytracing.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8E90E4B2278C8505008FE76D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		8E90E4B4278C8505008FE76D /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
+		8E90E4B6278C8505008FE76D /* Renderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Renderer.swift; sourceTree = "<group>"; };
+		8E90E4B8278C8505008FE76D /* Shaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Shaders.metal; sourceTree = "<group>"; };
+		8E90E4BA278C8505008FE76D /* ShaderTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShaderTypes.h; sourceTree = "<group>"; };
+		8E90E4BB278C8505008FE76D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		8E90E4BE278C8505008FE76D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		8E90E4C0278C8505008FE76D /* MetalRaytracing.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MetalRaytracing.entitlements; sourceTree = "<group>"; };
+		8E90E4C6278C852F008FE76D /* Raytracing.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Raytracing.metal; sourceTree = "<group>"; };
+		8E90E4C8278C853B008FE76D /* Scene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scene.swift; sourceTree = "<group>"; };
+		8E90E4CA278C8542008FE76D /* DragonScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DragonScene.swift; sourceTree = "<group>"; };
+		8E90E4CC278C854B008FE76D /* Mesh.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mesh.swift; sourceTree = "<group>"; };
+		8E90E4CE278C8550008FE76D /* Model.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Model.swift; sourceTree = "<group>"; };
+		8E90E4D0278C855B008FE76D /* SubMesh.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubMesh.swift; sourceTree = "<group>"; };
+		8E90E4D2278C8586008FE76D /* Utilities.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utilities.swift; sourceTree = "<group>"; };
+		8E90E4D4278C8A6F008FE76D /* Resources */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Resources; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8E90E4AC278C8505008FE76D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		8E90E4A6278C8505008FE76D = {
+			isa = PBXGroup;
+			children = (
+				8E90E4D4278C8A6F008FE76D /* Resources */,
+				8E90E4B1278C8505008FE76D /* MetalRaytracing */,
+				8E90E4B0278C8505008FE76D /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		8E90E4B0278C8505008FE76D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				8E90E4AF278C8505008FE76D /* MetalRaytracing.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		8E90E4B1278C8505008FE76D /* MetalRaytracing */ = {
+			isa = PBXGroup;
+			children = (
+				8E90E4B2278C8505008FE76D /* AppDelegate.swift */,
+				8E90E4B4278C8505008FE76D /* GameViewController.swift */,
+				8E90E4B6278C8505008FE76D /* Renderer.swift */,
+				8E90E4C8278C853B008FE76D /* Scene.swift */,
+				8E90E4CA278C8542008FE76D /* DragonScene.swift */,
+				8E90E4CE278C8550008FE76D /* Model.swift */,
+				8E90E4D2278C8586008FE76D /* Utilities.swift */,
+				8E90E4D0278C855B008FE76D /* SubMesh.swift */,
+				8E90E4CC278C854B008FE76D /* Mesh.swift */,
+				8E90E4B8278C8505008FE76D /* Shaders.metal */,
+				8E90E4C6278C852F008FE76D /* Raytracing.metal */,
+				8E90E4BA278C8505008FE76D /* ShaderTypes.h */,
+				8E90E4BB278C8505008FE76D /* Assets.xcassets */,
+				8E90E4BD278C8505008FE76D /* Main.storyboard */,
+				8E90E4C0278C8505008FE76D /* MetalRaytracing.entitlements */,
+			);
+			path = MetalRaytracing;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		8E90E4AE278C8505008FE76D /* MetalRaytracing */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8E90E4C3278C8505008FE76D /* Build configuration list for PBXNativeTarget "MetalRaytracing" */;
+			buildPhases = (
+				8E90E4AB278C8505008FE76D /* Sources */,
+				8E90E4AC278C8505008FE76D /* Frameworks */,
+				8E90E4AD278C8505008FE76D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MetalRaytracing;
+			productName = MetalRaytracing;
+			productReference = 8E90E4AF278C8505008FE76D /* MetalRaytracing.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		8E90E4A7278C8505008FE76D /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1320;
+				LastUpgradeCheck = 1320;
+				TargetAttributes = {
+					8E90E4AE278C8505008FE76D = {
+						CreatedOnToolsVersion = 13.2;
+					};
+				};
+			};
+			buildConfigurationList = 8E90E4AA278C8505008FE76D /* Build configuration list for PBXProject "MetalRaytracing" */;
+			compatibilityVersion = "Xcode 13.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 8E90E4A6278C8505008FE76D;
+			productRefGroup = 8E90E4B0278C8505008FE76D /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				8E90E4AE278C8505008FE76D /* MetalRaytracing */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8E90E4AD278C8505008FE76D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8E90E4BC278C8505008FE76D /* Assets.xcassets in Resources */,
+				8E90E4BF278C8505008FE76D /* Main.storyboard in Resources */,
+				8E90E4D5278C8A6F008FE76D /* Resources in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8E90E4AB278C8505008FE76D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8E90E4CF278C8550008FE76D /* Model.swift in Sources */,
+				8E90E4D1278C855B008FE76D /* SubMesh.swift in Sources */,
+				8E90E4D3278C8586008FE76D /* Utilities.swift in Sources */,
+				8E90E4C7278C852F008FE76D /* Raytracing.metal in Sources */,
+				8E90E4CB278C8542008FE76D /* DragonScene.swift in Sources */,
+				8E90E4CD278C854B008FE76D /* Mesh.swift in Sources */,
+				8E90E4B9278C8505008FE76D /* Shaders.metal in Sources */,
+				8E90E4C9278C853B008FE76D /* Scene.swift in Sources */,
+				8E90E4B5278C8505008FE76D /* GameViewController.swift in Sources */,
+				8E90E4B7278C8505008FE76D /* Renderer.swift in Sources */,
+				8E90E4B3278C8505008FE76D /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		8E90E4BD278C8505008FE76D /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				8E90E4BE278C8505008FE76D /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		8E90E4C1278C8505008FE76D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 12.1;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		8E90E4C2278C8505008FE76D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 12.1;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		8E90E4C4278C8505008FE76D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = MetalRaytracing/MetalRaytracing.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSMainStoryboardFile = Main;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = workmoose.MetalRaytracing;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "$(TARGET_NAME)/ShaderTypes.h";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		8E90E4C5278C8505008FE76D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = MetalRaytracing/MetalRaytracing.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_NSMainStoryboardFile = Main;
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = workmoose.MetalRaytracing;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OBJC_BRIDGING_HEADER = "$(TARGET_NAME)/ShaderTypes.h";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		8E90E4AA278C8505008FE76D /* Build configuration list for PBXProject "MetalRaytracing" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8E90E4C1278C8505008FE76D /* Debug */,
+				8E90E4C2278C8505008FE76D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8E90E4C3278C8505008FE76D /* Build configuration list for PBXNativeTarget "MetalRaytracing" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8E90E4C4278C8505008FE76D /* Debug */,
+				8E90E4C5278C8505008FE76D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 8E90E4A7278C8505008FE76D /* Project object */;
+}
