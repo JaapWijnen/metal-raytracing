@@ -18,6 +18,7 @@ class Renderer: NSObject {
     var scene: Scene
     
     var raytracingPipelineState: MTLComputePipelineState!
+    var fragmentRaytracingPipelineState: MTLRenderPipelineState!
     var renderPipelineState: MTLRenderPipelineState!
         
     var accumulationTargets: [MTLTexture] = []
@@ -32,6 +33,8 @@ class Renderer: NSObject {
     
     let maxFramesInFlight = 3
     var semaphore: DispatchSemaphore!
+    
+    var renderMode: RenderMode = .fragment
 
     var uniformBufferIndex = 0
     var uniformBufferOffset: Int {
@@ -80,9 +83,11 @@ class Renderer: NSObject {
         pipelineDescriptor.colorAttachments[0].pixelFormat = metalView.colorPixelFormat
         pipelineDescriptor.label = "Render PipelineState"
         
-        let computeDescriptor = MTLComputePipelineDescriptor()
-        computeDescriptor.threadGroupSizeIsMultipleOfThreadExecutionWidth = true
-        computeDescriptor.label = "Raytracing PipelineState"
+        do {
+            renderPipelineState = try device.makeRenderPipelineState(descriptor: pipelineDescriptor)
+        } catch {
+            print(error.localizedDescription)
+        }
         
         let functionConstants = MTLFunctionConstantValues()
         var resourceStride = Int32(self.resourceStride)
@@ -90,11 +95,26 @@ class Renderer: NSObject {
         var maxSubmeshes = Int32(self.maxSubmeshes)
         functionConstants.setConstantValue(&maxSubmeshes, type: .int, index: 1)
         
+        let rtVertexFunction = library.makeFunction(name: "raytracingVertex")
+        
+        pipelineDescriptor.vertexFunction = rtVertexFunction
+        pipelineDescriptor.label = "Fragment Raytracing PipelineState"
+        
+        do {
+            let rtFragmentFunction = try library.makeFunction(name: "raytracingFragment", constantValues: functionConstants)
+            pipelineDescriptor.fragmentFunction = rtFragmentFunction
+            fragmentRaytracingPipelineState = try device.makeRenderPipelineState(descriptor: pipelineDescriptor)
+        } catch {
+            print(error.localizedDescription)
+        }
+        
+        let computeDescriptor = MTLComputePipelineDescriptor()
+        computeDescriptor.threadGroupSizeIsMultipleOfThreadExecutionWidth = true
+        computeDescriptor.label = "Raytracing PipelineState"
+        
         do {
             computeDescriptor.computeFunction = try library.makeFunction(name: "raytracingKernel", constantValues: functionConstants)
-            
             raytracingPipelineState = try device.makeComputePipelineState(descriptor: computeDescriptor, options: [], reflection: nil)
-            renderPipelineState = try device.makeRenderPipelineState(descriptor: pipelineDescriptor)
         } catch {
             print(error.localizedDescription)
         }
@@ -275,9 +295,20 @@ class Renderer: NSObject {
     }
     
     func update(size: CGSize) {
+        if InputController.shared.keysPressed.contains(.one) {
+            renderMode = .compute
+        }
+        if InputController.shared.keysPressed.contains(.two) {
+            renderMode = .fragment
+        }
         updateUniforms(size: size)
         uniformBufferIndex = (uniformBufferIndex + 1) % maxFramesInFlight
     }
+}
+
+enum RenderMode {
+    case compute
+    case fragment
 }
 
 extension Renderer: MTKViewDelegate {
@@ -289,61 +320,98 @@ extension Renderer: MTKViewDelegate {
         let size = view.drawableSize
         update(size: size)
         
-        let width = Int(size.width)
-        let height = Int(size.height)
-        // process rays in 8x8 tiles
-        let threadsPerGroup = MTLSize(width: 8, height: 8, depth: 1)
-        let threadGroups = MTLSize(
-            width: (width + threadsPerGroup.width - 1) / threadsPerGroup.width,
-            height: (height + threadsPerGroup.height - 1) / threadsPerGroup.height,
-            depth: 1
-        )
+        if renderMode == .compute {
+            let width = Int(size.width)
+            let height = Int(size.height)
+            // process rays in 8x8 tiles
+            let threadsPerGroup = MTLSize(width: 8, height: 8, depth: 1)
+            let threadGroups = MTLSize(
+                width: (width + threadsPerGroup.width - 1) / threadsPerGroup.width,
+                height: (height + threadsPerGroup.height - 1) / threadsPerGroup.height,
+                depth: 1
+            )
+            
+            guard let computeEncoder = commandBuffer.makeComputeCommandEncoder() else { return }
+            computeEncoder.label = "Raytracing Pass"
+            computeEncoder.setComputePipelineState(raytracingPipelineState)
         
-        guard let computeEncoder = commandBuffer.makeComputeCommandEncoder() else { return }
-        computeEncoder.label = "Raytracing Pass"
-        computeEncoder.setComputePipelineState(raytracingPipelineState)
-    
-        computeEncoder.setBuffer(uniformBuffer,            offset: uniformBufferOffset, index: BufferIndex.uniforms.rawValue)
-        computeEncoder.setBuffer(resourcesBuffer,          offset: 0,                   index: BufferIndex.resources.rawValue)
-        computeEncoder.setBuffer(instanceDescriptorBuffer, offset: 0,                   index: BufferIndex.instanceDescriptors.rawValue)
-        computeEncoder.setBuffer(scene.lightBuffer,        offset: 0,                   index: BufferIndex.lights.rawValue)
-    
-        computeEncoder.setAccelerationStructure(instancedAccelarationStructure, bufferIndex: BufferIndex.accelerationStructure.rawValue)
-    
-        computeEncoder.setTexture(randomTexture,          index: TextureIndex.random.rawValue)
-        computeEncoder.setTexture(accumulationTargets[0], index: TextureIndex.accumulation.rawValue)
-        computeEncoder.setTexture(accumulationTargets[1], index: TextureIndex.previousAccumulation.rawValue)
+            computeEncoder.setBuffer(uniformBuffer,            offset: uniformBufferOffset, index: BufferIndex.uniforms.rawValue)
+            computeEncoder.setBuffer(resourcesBuffer,          offset: 0,                   index: BufferIndex.resources.rawValue)
+            computeEncoder.setBuffer(instanceDescriptorBuffer, offset: 0,                   index: BufferIndex.instanceDescriptors.rawValue)
+            computeEncoder.setBuffer(scene.lightBuffer,        offset: 0,                   index: BufferIndex.lights.rawValue)
         
-        for model in scene.models {
-            for mesh in model.meshes {
-                for resource in mesh.resources {
-                    computeEncoder.useResource(resource, usage: .read)
+            computeEncoder.setAccelerationStructure(instancedAccelarationStructure, bufferIndex: BufferIndex.accelerationStructure.rawValue)
+        
+            computeEncoder.setTexture(randomTexture,          index: TextureIndex.random.rawValue)
+            computeEncoder.setTexture(accumulationTargets[0], index: TextureIndex.accumulation.rawValue)
+            computeEncoder.setTexture(accumulationTargets[1], index: TextureIndex.previousAccumulation.rawValue)
+            
+            for model in scene.models {
+                for mesh in model.meshes {
+                    for resource in mesh.resources {
+                        computeEncoder.useResource(resource, usage: .read)
+                    }
                 }
             }
-        }
+            
+            for accelerationStructure in primitiveAccelerationStructures {
+                computeEncoder.useResource(accelerationStructure, usage: .read)
+            }
+            
+            computeEncoder.dispatchThreadgroups(threadGroups, threadsPerThreadgroup: threadsPerGroup)
+            computeEncoder.endEncoding()
+            
+            let tmp = accumulationTargets[0]
+            accumulationTargets[0] = accumulationTargets[1]
+            accumulationTargets[1] = tmp
+            
+            guard let descriptor = view.currentRenderPassDescriptor,
+                  let renderEncoder = commandBuffer.makeRenderCommandEncoder(
+                    descriptor: descriptor) else {
+                        return
+                    }
+            renderEncoder.setRenderPipelineState(renderPipelineState)
+            
+            // MARK: draw call
+            renderEncoder.setFragmentTexture(accumulationTargets[0], index: 0)
+            renderEncoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 6)
+            renderEncoder.endEncoding()
+        } else { // fragment mode
+            guard let descriptor = view.currentRenderPassDescriptor else { return }
+            guard let renderEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: descriptor) else { return }
+            renderEncoder.label = "Fragment Raytracing Pass"
+            renderEncoder.setRenderPipelineState(fragmentRaytracingPipelineState)
+                    
+            renderEncoder.setFragmentBuffer(uniformBuffer,            offset: uniformBufferOffset, index: BufferIndex.uniforms.rawValue)
+            renderEncoder.setFragmentBuffer(resourcesBuffer,          offset: 0,                   index: BufferIndex.resources.rawValue)
+            renderEncoder.setFragmentBuffer(instanceDescriptorBuffer, offset: 0,                   index: BufferIndex.instanceDescriptors.rawValue)
+            renderEncoder.setFragmentBuffer(scene.lightBuffer,        offset: 0,                   index: BufferIndex.lights.rawValue)
         
-        for accelerationStructure in primitiveAccelerationStructures {
-            computeEncoder.useResource(accelerationStructure, usage: .read)
-        }
+            renderEncoder.setFragmentAccelerationStructure(instancedAccelarationStructure, bufferIndex: BufferIndex.accelerationStructure.rawValue)
         
-        computeEncoder.dispatchThreadgroups(threadGroups, threadsPerThreadgroup: threadsPerGroup)
-        computeEncoder.endEncoding()
-        
-        let tmp = accumulationTargets[0]
-        accumulationTargets[0] = accumulationTargets[1]
-        accumulationTargets[1] = tmp
-        
-        guard let descriptor = view.currentRenderPassDescriptor,
-              let renderEncoder = commandBuffer.makeRenderCommandEncoder(
-                descriptor: descriptor) else {
-                    return
+            renderEncoder.setFragmentTexture(randomTexture,          index: TextureIndex.random.rawValue)
+            renderEncoder.setFragmentTexture(accumulationTargets[0], index: TextureIndex.accumulation.rawValue)
+            renderEncoder.setFragmentTexture(accumulationTargets[1], index: TextureIndex.previousAccumulation.rawValue)
+            
+            for model in scene.models {
+                for mesh in model.meshes {
+                    for resource in mesh.resources {
+                        renderEncoder.useResource(resource, usage: .read)
+                    }
                 }
-        renderEncoder.setRenderPipelineState(renderPipelineState)
-        
-        // MARK: draw call
-        renderEncoder.setFragmentTexture(accumulationTargets[0], index: 0)
-        renderEncoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 6)
-        renderEncoder.endEncoding()
+            }
+            
+            for accelerationStructure in primitiveAccelerationStructures {
+                renderEncoder.useResource(accelerationStructure, usage: .read)
+            }
+            
+            renderEncoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: 6)
+            renderEncoder.endEncoding()
+            
+            let tmp = accumulationTargets[0]
+            accumulationTargets[0] = accumulationTargets[1]
+            accumulationTargets[1] = tmp
+        }
         
         guard let drawable = view.currentDrawable else { return }
         commandBuffer.present(drawable)

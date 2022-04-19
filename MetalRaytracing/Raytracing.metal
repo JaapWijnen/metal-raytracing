@@ -174,7 +174,6 @@ kernel void raytracingKernel(uint2 tid [[thread_position_in_grid]],
         // Apply a random offset to the random number index to decorrelate pixels.
         unsigned int offset = randomTexture.read(tid).x;
         
-        
         // playing around with sorting threads here and eventually running functions batched together on the same threadgroup to reduce divergence.
         threadgroup short numbers[64];
         short number = constNumbers[tidtg];
