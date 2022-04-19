@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8E81FFEC280F699300839084 /* RaytracingFunctions.metal in Sources */ = {isa = PBXBuildFile; fileRef = 8E81FFEB280F699300839084 /* RaytracingFunctions.metal */; };
 		8E90E4B3278C8505008FE76D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E90E4B2278C8505008FE76D /* AppDelegate.swift */; };
 		8E90E4B5278C8505008FE76D /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E90E4B4278C8505008FE76D /* GameViewController.swift */; };
 		8E90E4B7278C8505008FE76D /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E90E4B6278C8505008FE76D /* Renderer.swift */; };
@@ -25,6 +26,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8E81FFEA280F695900839084 /* ShaderFunctions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ShaderFunctions.h; sourceTree = "<group>"; };
+		8E81FFEB280F699300839084 /* RaytracingFunctions.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = RaytracingFunctions.metal; sourceTree = "<group>"; };
 		8E90E4AF278C8505008FE76D /* MetalRaytracing.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MetalRaytracing.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8E90E4B2278C8505008FE76D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8E90E4B4278C8505008FE76D /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
@@ -88,7 +91,9 @@
 				8E90E4CC278C854B008FE76D /* Mesh.swift */,
 				8E90E4B8278C8505008FE76D /* Shaders.metal */,
 				8E90E4C6278C852F008FE76D /* Raytracing.metal */,
+				8E81FFEB280F699300839084 /* RaytracingFunctions.metal */,
 				8E90E4BA278C8505008FE76D /* ShaderTypes.h */,
+				8E81FFEA280F695900839084 /* ShaderFunctions.h */,
 				8E90E4BB278C8505008FE76D /* Assets.xcassets */,
 				8E90E4BD278C8505008FE76D /* Main.storyboard */,
 				8E90E4C0278C8505008FE76D /* MetalRaytracing.entitlements */,
@@ -168,6 +173,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8EE7BDBC280EE644006E3E93 /* InputController.swift in Sources */,
+				8E81FFEC280F699300839084 /* RaytracingFunctions.metal in Sources */,
 				8E90E4CF278C8550008FE76D /* Model.swift in Sources */,
 				8E90E4D1278C855B008FE76D /* SubMesh.swift in Sources */,
 				8E90E4D3278C8586008FE76D /* Utilities.swift in Sources */,

@@ -9,10 +9,11 @@
 #include <simd/simd.h>
 
 // Including header shared between this Metal shader code and Swift/C code executing Metal API commands
-#import "ShaderTypes.h"
 
 using namespace metal;
 using namespace raytracing;
+
+#include "ShaderFunctions.h"
 
 constant int resourcesStride [[function_constant(0)]];
 constant int maxSubmeshes [[function_constant(1)]];
@@ -21,48 +22,6 @@ struct Vertex {
     float4 position [[position]];
     float2 uv;
 };
-
-constant short primes2[] = {
-    2,   3,   5,   7,   11,  13,  17,  19,  23,  29,  31,  37,  41,  43,  47,  53,  59,  61,  67,  71,
-    73,  79,  83,  89,  97,  101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173,
-    179, 181, 191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281,
-    283, 293, 307, 311, 313, 317, 331, 337, 347, 349, 353, 359, 367, 373, 379, 383, 389, 397, 401, 409,
-    419, 421, 431, 433, 439, 443, 449, 457, 461, 463, 467, 479, 487, 491, 499, 503, 509, 521, 523, 541
-};
-
-half halton2(int i, short d) {
-    short b = primes2[d];
-
-    half f = 1.0f;
-    half invB = 1.0f / b;
-
-    half r = 0;
-
-    while (i > 0) {
-        f = f * invB;
-        r = r + f * (i % b);
-        i = i / b;
-    }
-
-    return r;
-}
-
-inline float3 alignHemisphereWithNormal2(float3 sample, float3 normal) {
-    // Set the "up" vector to the normal
-    float3 up = normal;
-    
-    // Find an arbitrary direction perpendicular to the normal. This will become the
-    // "right" vector.
-    float3 right = normalize(cross(normal, float3(0.0072f, 1.0f, 0.0034f)));
-    
-    // Find a third vector perpendicular to the previous two. This will be the
-    // "forward" vector.
-    float3 forward = cross(right, up);
-    
-    // Map the direction on the unit hemisphere to the coordinate system aligned
-    // with the normal.
-    return sample.x * right + sample.y * up + sample.z * forward;
-}
 
 constant float2 quadVertices[] = {
     float2(-1, -1),
@@ -80,72 +39,6 @@ vertex Vertex vertexShader(unsigned short vid [[vertex_id]])
     out.position = float4(position, 0, 1);
     out.uv = position * 0.5 + 0.5;
     return out;
-}
-
-inline void sampleAreaLight2(device Light & light,
-                            float2 u,
-                            float3 position,
-                            thread float3 & lightDirection,
-                            thread float3 & lightColor,
-                            thread float & lightDistance)
-{
-    // Map to -1..1
-    u = u * 2.0f - 1.0f;
-    
-    // Transform into light's coordinate system
-    float3 samplePosition = light.position +
-    light.right * u.x +
-    light.up * u.y;
-    
-    // Compute vector from sample point on light source to intersection point
-    lightDirection = samplePosition - position;
-    
-    lightDistance = length(lightDirection);
-    
-    float inverseLightDistance = 1.0f / max(lightDistance, 1e-3f);
-    
-    // Normalize the light direction
-    lightDirection *= inverseLightDistance;
-    
-    // Start with the light's color
-    lightColor = light.color;
-    
-    // Light falls off with the inverse square of the distance to the intersection point
-    lightColor *= (inverseLightDistance * inverseLightDistance);
-    
-    // Light also falls off with the cosine of angle between the intersection point and
-    // the light source
-    lightColor *= saturate(dot(-lightDirection, light.forward));
-}
-
-
-// Interpolates vertex attribute of an arbitrary type across the surface of a triangle
-// given the barycentric coordinates and triangle index in an intersection struct
-template<typename T>
-inline T interpolateVertexAttribute2(device T *attributes, intersector<triangle_data, instancing>::result_type intersection, device int *vertexIndices) {
-    float3 uvw;
-    uvw.xy = intersection.triangle_barycentric_coord;
-    uvw.z = 1.0 - uvw.x - uvw.y;
-    unsigned int triangleIndex = intersection.primitive_id;
-    unsigned int index1 = vertexIndices[triangleIndex * 3 + 1];
-    unsigned int index2 = vertexIndices[triangleIndex * 3 + 2];
-    unsigned int index3 = vertexIndices[triangleIndex * 3 + 0];
-    T T0 = attributes[index1];
-    T T1 = attributes[index2];
-    T T2 = attributes[index3];
-    return uvw.x * T0 + uvw.y * T1 + uvw.z * T2;
-}
-
-inline float3 sampleCosineWeightedHemisphere2(float2 u) {
-    float phi = 2.0f * M_PI_F * u.x;
-    
-    float cos_phi;
-    float sin_phi = sincos(phi, cos_phi);
-    
-    float cos_theta = sqrt(u.y);
-    float sin_theta = sqrt(1.0f - cos_theta * cos_theta);
-    
-    return float3(sin_theta * cos_phi, cos_theta, sin_theta * sin_phi);
 }
 
 fragment float4 fragmentShader(Vertex in [[stage_in]],
@@ -197,8 +90,8 @@ fragment float4 raytracingFragment(Vertex in [[stage_in]],
     unsigned int offset = randomTexture.read(pos).x;
     
     // Add a random offset to the pixel coordinates for antialiasing.
-    float2 r = float2(halton2(offset + uniforms.frameIndex, 0),
-                      halton2(offset + uniforms.frameIndex, 1));
+    float2 r = float2(halton(offset + uniforms.frameIndex, 0),
+                      halton(offset + uniforms.frameIndex, 1));
     pixel += r;
     
     // Map pixel coordinates to -1..1.
@@ -261,13 +154,13 @@ fragment float4 raytracingFragment(Vertex in [[stage_in]],
         int resourceIndex = instanceIndex * maxSubmeshes2 + geometryIndex2;
         Resource resource = resources[resourceIndex];
         
-        float3 objectSpaceSurfaceNormal = interpolateVertexAttribute2(resource.normals, intersection, resource.indices);
+        float3 objectSpaceSurfaceNormal = interpolateVertexAttribute(resource.normals, intersection, resource.indices);
         float3 worldSpaceSurfaceNormal = (objectToWorldSpaceTransform * float4(objectSpaceSurfaceNormal, 0)).xyz;
         worldSpaceSurfaceNormal = normalize(worldSpaceSurfaceNormal);
         float3 surfaceColor = resource.material->baseColor;
         
         // Choose a random light source to sample.
-        float lightSample = halton2(offset + uniforms.frameIndex, 2 + bounce * 5 + 0);
+        float lightSample = halton(offset + uniforms.frameIndex, 2 + bounce * 5 + 0);
         int lightIndex = min((int)(lightSample * uniforms.lightCount), uniforms.lightCount - 1);
         
         device Light &light = lights[lightIndex];
@@ -279,11 +172,11 @@ fragment float4 raytracingFragment(Vertex in [[stage_in]],
         if (light.type == LightTypeAreaLight) {
             
             // Choose a random point to sample on the light source.
-            r = float2(halton2(offset + uniforms.frameIndex, 2 + bounce * 5 + 1),
-                              halton2(offset + uniforms.frameIndex, 2 + bounce * 5 + 2));
+            r = float2(halton(offset + uniforms.frameIndex, 2 + bounce * 5 + 1),
+                              halton(offset + uniforms.frameIndex, 2 + bounce * 5 + 2));
 
             // Sample the lighting between the intersection point and the point on the area light.
-            sampleAreaLight2(light, r, worldSpaceIntersectionPoint, worldSpaceLightDirection,
+            sampleAreaLight(light, r, worldSpaceIntersectionPoint, worldSpaceLightDirection,
                             lightColor, lightDistance);
             
             
@@ -379,11 +272,11 @@ fragment float4 raytracingFragment(Vertex in [[stage_in]],
         // sample direction and surface normal, the math entirely cancels out except for
         // multiplying by the surface color. This sampling strategy also reduces the amount
         // of noise in the output image.
-        r = float2(halton2(offset + uniforms.frameIndex, 2 + bounce * 5 + 3),
-                   halton2(offset + uniforms.frameIndex, 2 + bounce * 5 + 4));
+        r = float2(halton(offset + uniforms.frameIndex, 2 + bounce * 5 + 3),
+                   halton(offset + uniforms.frameIndex, 2 + bounce * 5 + 4));
 
-        float3 worldSpaceSampleDirection = sampleCosineWeightedHemisphere2(r);
-        worldSpaceSampleDirection = alignHemisphereWithNormal2(worldSpaceSampleDirection, worldSpaceSurfaceNormal);
+        float3 worldSpaceSampleDirection = sampleCosineWeightedHemisphere(r);
+        worldSpaceSampleDirection = alignHemisphereWithNormal(worldSpaceSampleDirection, worldSpaceSurfaceNormal);
 
         ray.origin = worldSpaceIntersectionPoint + worldSpaceSurfaceNormal * 1e-3f;
         ray.direction = worldSpaceSampleDirection;
