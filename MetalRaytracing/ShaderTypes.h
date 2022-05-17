@@ -32,23 +32,49 @@
 
 typedef NS_ENUM(NSInteger, BufferIndex)
 {
-    BufferIndexUniforms                         = 0,
-    BufferIndexInstanceAccelerationStructure    = 1,
-    BufferIndexRandom                           = 2,
-    BufferIndexVertexColor                      = 3,
-    BufferIndexVertexNormals                    = 4,
-    BufferIndexResources                        = 5,
-    BufferIndexLights                           = 6,
-    BufferIndexInstances                        = 7,
-    BufferIndexAccelerationStructure            = 8,
-    BufferIndexInstanceDescriptors              = 9,
+    BufferIndexUniforms                                 = 0,
+    BufferIndexRandom                                   = 2,
+    BufferIndexVertexColor                              = 3,
+    BufferIndexVertexNormals                            = 4,
+    BufferIndexResources                                = 5,
+    BufferIndexLights                                   = 6,
+    BufferIndexInstances                                = 7,
+    BufferIndexAccelerationStructure                    = 8,
+    BufferIndexInstanceDescriptors                      = 9,
+    BufferIndexRays                                     = 10,
+    BufferIndexShadowRays                               = 11,
+    BufferIndexIntersections                            = 12,
+    BufferIndexRayColors                                = 13,
+    BufferIndexLightColors                              = 14,
+    BufferIndexAccumulatedColors                        = 15,
+    BufferIndexBounce                                   = 16,
+    BufferIndexRayOrigins                               = 17,
+    BufferIndexRayDirections                            = 18,
+    BufferIndexRayMaxDistances                          = 19,
+    BufferIndexShadowRayOrigins                         = 20,
+    BufferIndexShadowRayDirections                      = 21,
+    BufferIndexShadowRayMaxDistances                    = 22,
+    BufferIndexIntersectionDistances                    = 23,
+    BufferIndexIntersectionInstanceIDs                  = 24,
+    BufferIndexIntersectionGeometryIDs                  = 25,
+    BufferIndexIntersectionPrimitiveIDs                 = 26,
+    BufferIndexIntersectionTriangleCoordinates          = 27,
+    BufferIndexIntersectionWorldSpaceIntersectionPoints = 28,
 };
 
 typedef NS_ENUM(NSInteger, TextureIndex)
 {
-    TextureIndexAccumulation            = 0,
+    TextureIndexAccumulationTarget      = 0,
     TextureIndexPreviousAccumulation    = 1,
-    TextureIndexRandom                  = 2
+    TextureIndexRandom                  = 2,
+    TextureIndexRayColor                = 3,
+    TextureIndexRenderTarget            = 4,
+    TextureIndexSurfaceColor            = 5,
+    TextureIndexWorldSpaceSurfaceNormal = 6,
+    TextureIndexRayOrigins              = 7,
+    TextureIndexRayDirections           = 8,
+    TextureIndexShadowRayOrigins        = 9,
+    TextureIndexShadowRayDirections     = 10,
 };
 
 typedef NS_ENUM(NSInteger, VertexAttribute)
@@ -104,6 +130,24 @@ struct Material
     float specularExponent;
     float refractionIndex;
     float dissolve;
+};
+
+struct Intersection
+{
+    float distance;
+    int instanceID;
+    int geometryID;
+    int primitiveID;
+    vector_float2 coordinates;
+    vector_float3 worldSpaceIntersectionPoint;
+};
+
+struct Ray
+{
+    vector_float3 origin;
+    vector_float3 direction;
+    float min_distance;
+    float max_distance;
 };
 
 #endif /* ShaderTypes_h */

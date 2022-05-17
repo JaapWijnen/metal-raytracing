@@ -25,13 +25,6 @@ constant int maxSubmeshes [[function_constant(1)]];
 
 constant short constNumbers[64] = { 41, 38, 64, 45, 35, 59, 44, 11, 54, 29, 47, 26, 19, 22, 24, 7, 1, 23, 50, 9, 5, 52, 4, 56, 39, 0, 55, 25, 53, 16, 14, 13, 18, 15, 40, 60, 63, 21, 51, 30, 32, 10, 12, 33, 36, 6, 43, 57, 42, 62, 20, 28, 31, 17, 46, 34, 37, 3, 61, 58, 2, 27, 49, 8 };
 
-struct Resource
-{
-    device float3 *normals;
-    device int *indices;
-    device Material *material;
-};
-
 [[max_total_threads_per_threadgroup(64)]]
 kernel void raytracingKernel(uint2 tid [[thread_position_in_grid]],
                              uint tidtg [[ thread_index_in_threadgroup ]],
@@ -41,7 +34,7 @@ kernel void raytracingKernel(uint2 tid [[thread_position_in_grid]],
                              device MTLAccelerationStructureInstanceDescriptor *instances [[ buffer(BufferIndexInstanceDescriptors) ]],
                              device Light *lights [[ buffer(BufferIndexLights) ]],
                              texture2d<unsigned int, access::read> randomTexture [[ texture(TextureIndexRandom) ]],
-                             texture2d<float, access::read> prevTex [[ texture(TextureIndexAccumulation) ]],
+                             texture2d<float, access::read> prevTex [[ texture(TextureIndexAccumulationTarget) ]],
                              texture2d<float, access::write> dstTex [[ texture(TextureIndexPreviousAccumulation) ]])
 {
     // The sample aligns the thread count to the threadgroup size. which means the thread count

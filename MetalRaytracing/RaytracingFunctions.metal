@@ -80,12 +80,12 @@ float3 sampleCosineWeightedHemisphere(float2 u) {
 // source and returns the direction to this point, the amount of light which travels
 // between the intersection point and the sample point on the light source, as well
 // as the distance between these two points.
-void sampleAreaLight(device Light & light,
-                            float2 u,
-                            float3 position,
-                            thread float3 & lightDirection,
-                            thread float3 & lightColor,
-                            thread float & lightDistance)
+void sampleAreaLight(Light light,
+                     float2 u,
+                     float3 position,
+                     thread float3 & lightDirection,
+                     thread float3 & lightColor,
+                     thread float & lightDistance)
 {
     // Map to -1..1
     u = u * 2.0f - 1.0f;
@@ -115,3 +115,4 @@ void sampleAreaLight(device Light & light,
     // the light source
     lightColor *= saturate(dot(-lightDirection, light.forward));
 }
+

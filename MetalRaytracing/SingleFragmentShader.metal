@@ -65,13 +65,6 @@ vertex Vertex raytracingVertex(unsigned short vid [[vertex_id]])
     return out;
 }
 
-struct Resource
-{
-    device float3 *normals;
-    device int *indices;
-    device Material *material;
-};
-
 fragment float4 raytracingFragment(Vertex in [[stage_in]],
                                    constant Uniforms & uniforms [[ buffer(BufferIndexUniforms) ]],
                                    acceleration_structure<instancing> accelerationStructure [[ buffer(BufferIndexAccelerationStructure) ]],
@@ -79,7 +72,7 @@ fragment float4 raytracingFragment(Vertex in [[stage_in]],
                                    device MTLAccelerationStructureInstanceDescriptor *instances [[ buffer(BufferIndexInstanceDescriptors) ]],
                                    device Light *lights [[ buffer(BufferIndexLights) ]],
                                    texture2d<unsigned int, access::read> randomTexture [[ texture(TextureIndexRandom) ]],
-                                   texture2d<float, access::read> prevTex [[ texture(TextureIndexAccumulation) ]],
+                                   texture2d<float, access::read> prevTex [[ texture(TextureIndexAccumulationTarget) ]],
                                    texture2d<float, access::write> dstTex [[ texture(TextureIndexPreviousAccumulation) ]])
 {
     float2 pixel = in.position.xy;
