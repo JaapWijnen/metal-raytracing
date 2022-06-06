@@ -27,7 +27,7 @@ class GameViewController: NSViewController {
 
         mtkView.device = defaultDevice
 
-        guard let newRenderer = SplitComputeRenderer(metalView: mtkView, viewController: self) else {
+        guard let newRenderer = RayBinningRenderer(metalView: mtkView, viewController: self) else {
             print("Renderer cannot be initialized")
             return
         }
@@ -72,6 +72,11 @@ class GameViewController: NSViewController {
             guard let renderer = SplitDataRenderer(metalView: mtkView, viewController: self) else { return }
             self.set(renderer: renderer)
             print("switched to split data renderer")
+        }
+        if InputController.shared.keysPressed.contains(.six) {
+            guard let renderer = RayBinningRenderer(metalView: mtkView, viewController: self) else { return }
+            self.set(renderer: renderer)
+            print("switched to ray binning renderer")
         }
     }
 }

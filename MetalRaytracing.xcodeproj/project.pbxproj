@@ -29,6 +29,8 @@
 		8E9C9C682831435C004D1EA1 /* SplitDataRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9C9C672831435C004D1EA1 /* SplitDataRenderer.swift */; };
 		8E9C9C6A283143DD004D1EA1 /* SplitDataShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 8E9C9C69283143DD004D1EA1 /* SplitDataShaders.metal */; };
 		8E9C9C6E2833C797004D1EA1 /* Buffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9C9C6D2833C797004D1EA1 /* Buffer.swift */; };
+		8E9C9C702833D5A9004D1EA1 /* RayBinningRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E9C9C6F2833D5A9004D1EA1 /* RayBinningRenderer.swift */; };
+		8E9C9C722833D605004D1EA1 /* RayBinningShaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 8E9C9C712833D605004D1EA1 /* RayBinningShaders.metal */; };
 		8EE7BDBC280EE644006E3E93 /* InputController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EE7BDBB280EE644006E3E93 /* InputController.swift */; };
 /* End PBXBuildFile section */
 
@@ -59,6 +61,8 @@
 		8E9C9C672831435C004D1EA1 /* SplitDataRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitDataRenderer.swift; sourceTree = "<group>"; };
 		8E9C9C69283143DD004D1EA1 /* SplitDataShaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = SplitDataShaders.metal; sourceTree = "<group>"; };
 		8E9C9C6D2833C797004D1EA1 /* Buffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Buffer.swift; sourceTree = "<group>"; };
+		8E9C9C6F2833D5A9004D1EA1 /* RayBinningRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RayBinningRenderer.swift; sourceTree = "<group>"; };
+		8E9C9C712833D605004D1EA1 /* RayBinningShaders.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = RayBinningShaders.metal; sourceTree = "<group>"; };
 		8EE7BDBB280EE644006E3E93 /* InputController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InputController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -100,6 +104,7 @@
 				8E81FFF1281812CB00839084 /* SingleFragmentRenderer.swift */,
 				8E81FFF3281812D500839084 /* SplitComputeRenderer.swift */,
 				8E9C9C672831435C004D1EA1 /* SplitDataRenderer.swift */,
+				8E9C9C6F2833D5A9004D1EA1 /* RayBinningRenderer.swift */,
 				8EE7BDBB280EE644006E3E93 /* InputController.swift */,
 				8E9C9C6D2833C797004D1EA1 /* Buffer.swift */,
 				8E90E4C8278C853B008FE76D /* Scene.swift */,
@@ -113,6 +118,7 @@
 				8E81FFEB280F699300839084 /* RaytracingFunctions.metal */,
 				8E81FFED28104A9E00839084 /* SplitComputeShaders.metal */,
 				8E9C9C69283143DD004D1EA1 /* SplitDataShaders.metal */,
+				8E9C9C712833D605004D1EA1 /* RayBinningShaders.metal */,
 				8E90E4BA278C8505008FE76D /* ShaderTypes.h */,
 				8E81FFEA280F695900839084 /* ShaderFunctions.h */,
 				8E90E4BB278C8505008FE76D /* Assets.xcassets */,
@@ -209,10 +215,12 @@
 				8E9C9C6E2833C797004D1EA1 /* Buffer.swift in Sources */,
 				8E81FFF4281812D500839084 /* SplitComputeRenderer.swift in Sources */,
 				8E90E4B9278C8505008FE76D /* SingleFragmentShader.metal in Sources */,
+				8E9C9C702833D5A9004D1EA1 /* RayBinningRenderer.swift in Sources */,
 				8E90E4C9278C853B008FE76D /* Scene.swift in Sources */,
 				8E90E4B5278C8505008FE76D /* GameViewController.swift in Sources */,
 				8E90E4B7278C8505008FE76D /* Renderer.swift in Sources */,
 				8E90E4B3278C8505008FE76D /* AppDelegate.swift in Sources */,
+				8E9C9C722833D605004D1EA1 /* RayBinningShaders.metal in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

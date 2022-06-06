@@ -1,10 +1,11 @@
 import MetalKit
 import MetalPerformanceShaders
 
-class SplitDataRenderer: Renderer {
+class RayBinningRenderer: Renderer {
     var resetRayColorPipeline: MTLComputePipelineState!
     var resetAccumulationTexturePipeline: MTLComputePipelineState!
     var primaryRayPipeline: MTLComputePipelineState!
+    var rayBinningPipeline: MTLComputePipelineState!
     var intersectionPipeline: MTLComputePipelineState!
     var shadePipeline: MTLComputePipelineState!
     var shade2Pipeline: MTLComputePipelineState!
@@ -37,6 +38,9 @@ class SplitDataRenderer: Renderer {
     var intersectionCoordinatesBuffer: Buffer<Float>!
     var intersectionWorldSpaceIntersectionPointBuffer: Buffer<SIMD3<Float>>!
     
+    var rayBinningCoordinatesBuffer: Buffer<SIMD2<UInt32>>!
+    var raysPerTileBuffer: Buffer<UInt32>!
+    
     var lightColorBuffer: Buffer<SIMD4<Float>>!
     
     override init?(metalView: MTKView, viewController: GameViewController) {
@@ -54,7 +58,7 @@ class SplitDataRenderer: Renderer {
         pipelineDescriptor.colorAttachments[0].pixelFormat = mtkView.colorPixelFormat
         
         let computeDescriptor = MTLComputePipelineDescriptor()
-        computeDescriptor.threadGroupSizeIsMultipleOfThreadExecutionWidth = true
+        computeDescriptor.threadGroupSizeIsMultipleOfThreadExecutionWidth = false
         
         let shadeFunctionConstants = MTLFunctionConstantValues()
         var resourceStride = Int32(scene.resourceStride)
@@ -72,6 +76,9 @@ class SplitDataRenderer: Renderer {
             computeDescriptor.computeFunction = library.makeFunction(name: "sd_primary_ray_kernel")
             computeDescriptor.label = "Primary Ray PipelineState"
             primaryRayPipeline = try device.makeComputePipelineState(descriptor: computeDescriptor, options: [], reflection: nil)
+            computeDescriptor.computeFunction = library.makeFunction(name: "rb_ray_bin_kernel")
+            computeDescriptor.label = "Ray Binning PipelineState"
+            rayBinningPipeline = try device.makeComputePipelineState(descriptor: computeDescriptor, options: [], reflection: nil)
             computeDescriptor.computeFunction = library.makeFunction(name: "sd_intersection_kernel")
             computeDescriptor.label = "Intersection PipelineState"
             intersectionPipeline = try device.makeComputePipelineState(descriptor: computeDescriptor, options: [], reflection: nil)
@@ -159,6 +166,12 @@ class SplitDataRenderer: Renderer {
         rayMaxDistanceBuffer = device.makeBuffer(count: rayCount, index: .rayMaxDistances, label: "Ray Max Distance Buffer", options: .storageModePrivate)
         shadowRayMaxDistanceBuffer = device.makeBuffer(count: rayCount, index: .shadowRayMaxDistances, label: "Shadow Ray Max Distance Buffer", options: .storageModePrivate)
         
+        rayBinningCoordinatesBuffer = device.makeBuffer(count: rayCount, index: .rayBinningCoordinates, label: "Ray Binning Coordinates Buffer", options: .storageModePrivate)
+        let tileSize = 4
+        let tilesWidth = (Int(size.width) + tileSize - 1) / tileSize
+        let tilesHeight = (Int(size.height) + tileSize - 1) / tileSize
+        raysPerTileBuffer = device.makeBuffer(count: tilesWidth * tilesHeight, index: .raysPerTile, label: "Rays per Tile Buffer", options: .storageModePrivate)
+        
 //        rayBuffer = device.makeBuffer(length: rayCount * rayStride, options: .storageModePrivate)
 //        rayBuffer.label = "Ray Buffer"
 //        shadowRayBuffer = device.makeBuffer(length: rayCount * rayStride, options: .storageModePrivate)
@@ -183,9 +196,9 @@ class SplitDataRenderer: Renderer {
         
         let width = Int(size.width)
         let height = Int(size.height)
-        
+                
         // TODO: check logic
-        let threadsPerGroup = MTLSize(width: 8, height: 8, depth: 1)
+        let threadsPerGroup = MTLSize(width: 4, height: 4, depth: 1)
         let threadGroups = MTLSize(width: (width + threadsPerGroup.width - 1) / threadsPerGroup.width, height: (height + threadsPerGroup.height - 1) / threadsPerGroup.height, depth: 1)
         
         guard let computeEncoder = commandBuffer.makeComputeCommandEncoder() else { return }
@@ -219,6 +232,17 @@ class SplitDataRenderer: Renderer {
         let maxBounces = 3
         
         for bounce in 0..<maxBounces {
+//            guard let computeEncoder = commandBuffer.makeComputeCommandEncoder() else { return }
+//            computeEncoder.label = "Ray Binning pass"
+//            computeEncoder.setComputePipelineState(rayBinningPipeline)
+//            computeEncoder.setBuffer(uniformBuffer, offset: uniformBufferOffset)
+//            computeEncoder.setBuffer(rayMaxDistanceBuffer)
+//            computeEncoder.setTexture(rayDirectionTexture)
+//            computeEncoder.setBuffer(rayBinningCoordinatesBuffer)
+//            computeEncoder.setBuffer(raysPerTileBuffer)
+//            computeEncoder.dispatchThreadgroups(threadGroups, threadsPerThreadgroup: threadsPerGroup)
+//            computeEncoder.endEncoding()
+            
             guard let computeEncoder = commandBuffer.makeComputeCommandEncoder() else { return }
             computeEncoder.label = "Intersection pass"
             computeEncoder.setComputePipelineState(intersectionPipeline)
@@ -250,7 +274,6 @@ class SplitDataRenderer: Renderer {
             computeEncoder.setBuffer(scene.instanceDescriptorBuffer, offset: 0, index: BufferIndex.instanceDescriptors.rawValue)
             computeEncoder.setBuffer(scene.resourcesBuffer, offset: 0, index: BufferIndex.resources.rawValue)
             
-
             computeEncoder.setBuffer(rayMaxDistanceBuffer)
             computeEncoder.setBuffer(shadowRayMaxDistanceBuffer)
             

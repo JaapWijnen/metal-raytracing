@@ -60,6 +60,8 @@ typedef NS_ENUM(NSInteger, BufferIndex)
     BufferIndexIntersectionPrimitiveIDs                 = 26,
     BufferIndexIntersectionTriangleCoordinates          = 27,
     BufferIndexIntersectionWorldSpaceIntersectionPoints = 28,
+    BufferIndexRayBinningCoordinates                    = 29,
+    BufferIndexRaysPerTile                              = 30,
 };
 
 typedef NS_ENUM(NSInteger, TextureIndex)
