@@ -10,3 +10,7 @@ Runs on macOS
 
 ### Screenshots
 ![alt text](https://github.com/jaapwijnen/metal-raytracing/raw/main/images/screenshot1.png "Screenshot 1")
+
+## License
+
+This library is released under the MIT license. See [LICENSE](LICENSE) for details.
